@@ -1,0 +1,118 @@
+﻿@page "/Tecnico/Delete/{TecnicoID:int}"
+@rendermode InteractiveServer
+@inject TecnicoService tecnicoService
+@inject NavigationManager navigationManager
+@using RegistroTecnico.Models
+
+<PageTitle>Eliminar Técnico</PageTitle>
+
+<div class="container mt-3">
+    <div class="card shadow p-3">
+        <div class="card-header mb-1 text-center bg-white border-0">
+            <h2 class="card-title">Eliminar Tecnico</h2>
+        </div>
+
+        <div class="card-body">
+            @if (tecnico == null)
+            {
+                <div class="text-center">
+                    <p>Cargando datos...</p>
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger mb-4">
+                    <h4 class="alert-heading">¡Advertencia!</h4>
+                    <p>¿Está seguro que desea eliminar este técnico? Esta acción no se puede deshacer.</p>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Detalles del Técnico</h5>
+                        <div class="row mb-2">
+                            <div class="col-sm-3 fw-bold">TécnicoID:</div>
+                            <div class="col-sm-9">@tecnico.TecnicoID</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-3 fw-bold">Nombres:</div>
+                            <div class="col-sm-9">@tecnico.Nombres</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-3 fw-bold">Sueldo por Hora:</div>
+                            <div class="col-sm-9">@tecnico.SueldoHora.ToString("N2")</div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(mensajeError))
+                {
+                    <div class="alert alert-danger">
+                        @mensajeError
+                    </div>
+                }
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="/Tecnico/Index" class="btn btn-secondary">
+                        <span class="bi bi-arrow-left"></span> Cancelar
+                    </a>
+                    <button @onclick="EliminarTec" class="btn btn-danger">
+                        <span class="bi bi-trash"></span> Confirmar Eliminación
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int TecnicoID { get; set; }
+
+    private Tecnico? tecnico;
+    private string mensajeError = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            
+            var tecnicos = await tecnicoService.Listar(t => t.TecnicoID == TecnicoID);
+            tecnico = tecnicos.FirstOrDefault();
+
+           
+            if (tecnico == null)
+            {
+                navigationManager.NavigateTo("/Tecnico/Index");
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al cargar datos: {ex.Message}";
+        }
+    }
+
+    private async Task EliminarTec()
+    {
+        try
+        {
+            
+            var eliminado = await tecnicoService.Eliminar(TecnicoID);
+
+            if (eliminado)
+            {
+                navigationManager.NavigateTo("/Tecnico/Index");
+            }
+            else
+            {
+                mensajeError = "No se pudo eliminar el técnico.";
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al eliminar: {ex.Message}";
+        }
+    }
+}

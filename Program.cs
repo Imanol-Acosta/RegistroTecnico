@@ -1,10 +1,33 @@
 using RegistroTecnico.Components;
+using RegistroTecnico.DAL;
+using Microsoft.EntityFrameworkCore;
+using RegistroTecnico.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+
+builder.Services.AddRazorPages();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
+var Constr = builder.Configuration.GetConnectionString("ConStr");
+
+builder.Services.AddDbContextFactory<Contexto>(options =>
+    options.UseSqlServer(Constr));
+
+
+
+//Inyeccion del services
+builder.Services.AddScoped<TecnicoService>();
+
+
+
+
 
 var app = builder.Build();
 
