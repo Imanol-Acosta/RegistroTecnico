@@ -1,0 +1,211 @@
+﻿@page "/Tecnico/Index"
+@rendermode InteractiveServer
+@inject TecnicoService tecnicoService
+@inject NavigationManager navigationManager
+
+<PageTitle> Registro de tecnico </PageTitle>
+<div class="container mt-3">
+    <div class="card shadow p-3">
+        <div class="card-header mb-1 text-center bg-white border-0">
+            <h2 class="card-title">Registro de técnico</h2>
+        </div>
+
+        <div class="card-body">
+
+            @* Etiquetas y Botón Crear *@
+            <div class="row align-items-end mb-1">
+                <div class="col-3">
+                    <label class="col-form-label"><strong>Filtrar por:</strong></label>
+                </div>
+                <div class="col-4">
+                    <label class="col-form-label"><strong>Búsqueda</strong></label>
+                </div>
+                <div class="col-5 text-end">
+                    <a href="/Tecnico/Create" class="btn btn-success" style="background-color:#1C8D0F; border: none;">
+                        <span class="bi bi-plus-square"></span> Crear
+                    </a>
+                </div>
+            </div>
+
+            @* Inputs y botón de búsqueda *@
+            <div class="row align-items-center">
+                <div class="col-3">
+                    <select class="form-select" @bind="filtro">
+                        <option value="" selected>Todos</option>
+                        <option value="Id">TecnicoId</option>
+                        <option value="Nombres">Nombre</option>
+                        <option value="SueldoHora">Sueldo por Hora</option>
+                    </select>
+                </div>
+
+                <div class="col-4">
+                    <div class="input-group">
+                        <input class="form-control" @bind="valorFiltro" @bind:event="oninput" @onkeyup="@EnterKeyPressed" placeholder="Buscar" />
+                        <button type="button" class="btn btn-primary" @onclick="Buscar">
+                            <span class="bi bi-search"></span> 
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
+
+            @if (!string.IsNullOrEmpty(mensajeError))
+            {
+                <div class="alert alert-danger mt-3">
+                    @mensajeError
+                </div>
+            }
+
+            @if (tecnicos.Count == 0)
+            {
+                <div class="alert alert-info mt-3">
+                    No se encontraron técnicos @(!string.IsNullOrEmpty(valorFiltro) ? "con los criterios de búsqueda seleccionados" : "registrados").
+                </div>
+            }
+            else
+            {
+                <table class="table table-hover table-bordered text-center mt-4">
+                    <thead class="table table-striped text-black" style="border-bottom: 3px solid #1C8D0F;">
+                        <tr>
+                            <th class="fw-semibold">TecnicoId</th>
+                            <th class="fw-semibold">Nombres</th>
+                            <th class="fw-semibold">Sueldo por Hora</th>
+                            <th class="fw-semibold">Editar</th>
+                            <th class="fw-semibold">Eliminar</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var tecnico in tecnicos)
+                        {
+                            <tr>
+                                <td>@tecnico.TecnicoID</td>
+                                <td>@tecnico.Nombres</td>
+                                <td>@tecnico.SueldoHora.ToString("N2")</td>
+                                <td class="text-center">
+                                    <a href="/Tecnico/Edit/@tecnico.TecnicoID" class="bi bi-pencil-square fs-4" style="border-color: #3BC035; color: #3BC035; position: relative; top: 3px; left:0px"></a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="/Tecnico/Delete/@tecnico.TecnicoID" class="bi bi-trash fs-4" style="border-color: #FF0000; color: #FF0000; position: relative; top: 3px; left:0px"></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<Tecnico> tecnicos = new List<Tecnico>();
+    public List<Tecnico> todosLosTecnicos = new List<Tecnico>();
+    private string filtro = "";
+    private string valorFiltro = "";
+    private string mensajeError = "";
+    private bool mostrarReiniciar = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarTecnicos();
+    }
+
+    private async Task CargarTecnicos()
+    {
+        try
+        {
+            tecnicos = await tecnicoService.Listar(t => true);
+            todosLosTecnicos = new List<Tecnico>(tecnicos);
+            mensajeError = "";
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al cargar datos: {ex.Message}";
+        }
+    }
+
+    private async Task Buscar()
+    {
+        try
+        {
+            mensajeError = "";
+
+            if (string.IsNullOrWhiteSpace(valorFiltro))
+            {
+                
+                tecnicos = todosLosTecnicos;
+                mostrarReiniciar = false;
+                return;
+            }
+
+            
+            mostrarReiniciar = true;
+
+            
+            switch (filtro.ToLower())
+            {
+                case "id":
+                    if (int.TryParse(valorFiltro, out int tecnicoId))
+                    {
+                        tecnicos = todosLosTecnicos.Where(t => t.TecnicoID == tecnicoId).ToList();
+                    }
+                    else
+                    {
+                        mensajeError = "El ID debe ser un número válido.";
+                        return;
+                    }
+                    break;
+
+                case "nombres":
+                    tecnicos = todosLosTecnicos.Where(t =>
+                        t.Nombres != null &&
+                        t.Nombres.ToLower().Contains(valorFiltro.ToLower())).ToList();
+                    break;
+
+                case "sueldohora":
+                    if (float.TryParse(valorFiltro.Replace(",", "."),
+                        System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        out float sueldo))
+                    {
+                        tecnicos = todosLosTecnicos.Where(t => Math.Abs(t.SueldoHora - sueldo) < 0.01f).ToList();
+                    }
+                    else
+                    {
+                        mensajeError = "El sueldo debe ser un número válido.";
+                        return;
+                    }
+                    break;
+
+                default:
+                    
+                    tecnicos = todosLosTecnicos.Where(t =>
+                        (t.Nombres != null && t.Nombres.ToLower().Contains(valorFiltro.ToLower())) ||
+                        (t.TecnicoID.ToString().Contains(valorFiltro)) ||
+                        (t.SueldoHora.ToString().Contains(valorFiltro))).ToList();
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al buscar: {ex.Message}";
+        }
+    }
+
+    private void ReiniciarBusqueda()
+    {
+        valorFiltro = "";
+        filtro = "";
+        tecnicos = todosLosTecnicos;
+        mostrarReiniciar = false;
+        mensajeError = "";
+    }
+
+    private async Task EnterKeyPressed(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await Buscar();
+        }
+    }
+}
