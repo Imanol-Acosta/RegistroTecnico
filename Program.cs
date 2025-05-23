@@ -24,6 +24,8 @@ builder.Services.AddDbContextFactory<Contexto>(options =>
 
 //Inyeccion del services
 builder.Services.AddScoped<TecnicoService>();
+builder.Services.AddScoped<ClienteService>();
+
 
 
 
