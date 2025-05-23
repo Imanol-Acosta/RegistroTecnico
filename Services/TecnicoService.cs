@@ -62,4 +62,9 @@ public class TecnicoService(IDbContextFactory<Contexto> dbFactory)
             .ToListAsync();
     }
 
+    public Tecnico Limpiar()
+    {
+        return new Tecnico();
+    }
+
 }
