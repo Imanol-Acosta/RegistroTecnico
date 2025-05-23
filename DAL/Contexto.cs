@@ -12,4 +12,6 @@ public class Contexto : DbContext
 
     
     public DbSet<Tecnico> Tecnicos { get; set; }
+
+    public DbSet<Cliente> Clientes { get; set; }
 }
