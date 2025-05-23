@@ -7,8 +7,8 @@
 <PageTitle>Eliminar Técnico</PageTitle>
 
 <div class="container mt-3">
-    <div class="card shadow p-3">
-        <div class="card-header mb-1 text-center bg-white border-0">
+    <div class="card shadow p-0">
+        <div class="card-header text-center bg-primary text-white">
             <h2 class="card-title">Eliminar Tecnico</h2>
         </div>
 
@@ -24,14 +24,14 @@
             }
             else
             {
-                <div class="alert alert-danger mb-4">
-                    <h4 class="alert-heading">¡Advertencia!</h4>
-                    <p>¿Está seguro que desea eliminar este técnico? Esta acción no se puede deshacer.</p>
+                <div class="text-danger">
+                    <h4 class="alert-heading">¿Estás seguro de que quieres eliminar el Técnico?</h4>
+                    
                 </div>
 
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Detalles del Técnico</h5>
+                        <h5 class="card-title">Datos del Técnico</h5>
                         <div class="row mb-2">
                             <div class="col-sm-3 fw-bold">TécnicoID:</div>
                             <div class="col-sm-9">@tecnico.TecnicoID</div>
@@ -54,13 +54,14 @@
                     </div>
                 }
 
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="/Tecnico/Index" class="btn btn-secondary">
-                        <span class="bi bi-arrow-left"></span> Cancelar
-                    </a>
-                    <button @onclick="EliminarTec" class="btn btn-danger">
-                        <span class="bi bi-trash"></span> Confirmar Eliminación
+                <div class="card-footer accordion-button">
+                    <button @onclick="EliminarTec" class="btn btn-outline-danger">
+                        <span class="bi bi-trash"></span> Eliminar
                     </button>
+
+                    <a href="/Tecnico/Index" class="btn btn-outline-secondary">
+                        <span class="bi bi-arrow-left"></span> Volver
+                    </a>
                 </div>
             }
         </div>
