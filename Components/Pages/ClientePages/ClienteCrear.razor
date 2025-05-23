@@ -1,0 +1,158 @@
+﻿@page "/Cliente/Crear"
+@rendermode InteractiveServer
+@inject ClienteService clienteService
+@inject NavigationManager navigationManager
+@using RegistroTecnico.Models
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Crear Cliente</PageTitle>
+
+<div class="container mt-3">
+    <div class="card shadow p-0">
+        <div class="card-header text-center bg-primary text-white">
+            <h2 class="card-title">Crear Cliente</h2>
+        </div>
+
+        <div class="card-body">
+            <EditForm Model="@cliente" OnValidSubmit="Guardar">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Nombres:</label>
+                    <div class="col-sm-9">
+                        <InputText class="form-control" @bind-Value="cliente.Nombres" placeholder="Ingrese el nombre del cliente" />
+                        <ValidationMessage For="@(() => cliente.Nombres)" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Dirección:</label>
+                    <div class="col-sm-9">
+                        <InputText class="form-control" @bind-Value="cliente.Direccion" placeholder="Dirección del cliente" />
+                        <ValidationMessage For="@(() => cliente.Direccion)" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">RNC:</label>
+                    <div class="col-sm-9">
+                        <InputText class="form-control" @bind-Value="cliente.Rnc" placeholder="000-0000000-0" />
+                        <ValidationMessage For="@(() => cliente.Rnc)" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Límite de Crédito:</label>
+                    <div class="col-sm-9">
+                        <InputNumber class="form-control" @bind-Value="cliente.LimiteCredito" placeholder="0.00" />
+                        <ValidationMessage For="@(() => cliente.LimiteCredito)" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Técnico Encargado:</label>
+                    <div class="col-sm-9">
+                        <InputSelect class="form-select" @bind-Value="cliente.TecnicoId">
+                            <option disabled selected value="">Seleccione un técnico</option>
+                            @foreach (var tecnico in tecnicos)
+                            {
+                                <option value="@tecnico.TecnicoId">@tecnico.Nombres</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => cliente.TecnicoId)" />
+                    </div>
+                </div>
+
+
+
+                <div class="card-footer accordion-button">
+                    <div class="col-7 text-end">
+                        <a href="/Cliente/Index" class="btn btn-outline-secondary">
+                            <span class="bi bi-arrow-bar-left"></span> Volver
+                        </a>
+
+                        <button type="submit" class="btn btn-outline-success">
+                            <span class="bi bi-check-circle-fill"></span> Guardar
+                        </button>
+
+                        <button type="button" class="btn btn-outline-info" @onclick="LimpiarCampos">
+                            <span class="bi bi-plus"></span> Limpiar
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+
+            @if (!string.IsNullOrWhiteSpace(mensajeError))
+            {
+                <div class="alert alert-danger mt-3">
+                    @mensajeError
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private Cliente cliente = new Cliente();
+    private string mensajeError = string.Empty;
+
+    private async Task LimpiarCampos()
+    {
+        cliente = clienteService.Limpiar();
+        mensajeError = string.Empty;
+        StateHasChanged();
+    }
+
+    private async Task Guardar()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(cliente.Nombres))
+            {
+                mensajeError = "El nombre del cliente es obligatorio.";
+                return;
+            }
+
+            if (cliente.LimiteCredito <= 0)
+            {
+                mensajeError = "El límite de crédito debe ser mayor que cero.";
+                return;
+            }
+
+            cliente.ClienteId = 0;
+
+            var guardado = await clienteService.Guardar(cliente);
+
+            if (guardado)
+            {
+                navigationManager.NavigateTo("/Cliente/Index");
+            }
+            else
+            {
+                mensajeError = "No se pudo guardar el cliente. El servicio indicó que la operación falló.";
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al guardar: {ex.Message}";
+            if (ex.InnerException != null)
+                mensajeError += $" Detalles: {ex.InnerException.Message}";
+
+            Console.WriteLine($"Excepción: {ex}");
+            StateHasChanged();
+        }
+    }
+
+    private List<Tecnico> tecnicos = new List<Tecnico>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        tecnicos = await clienteService.ObtenerTecnicos();
+        cliente.FechaIngreso = DateTime.Today; 
+    }
+
+
+
+}
