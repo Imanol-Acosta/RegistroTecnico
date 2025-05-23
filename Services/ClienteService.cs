@@ -78,4 +78,18 @@ public class ClienteService
             .Where(criterio)
             .ToListAsync();
     }
+
+    public Cliente Limpiar()
+    {
+        return new Cliente();
+    }
+
+    public async Task<List<Tecnico>> ObtenerTecnicos()
+    {
+        return await context.Tecnicos.ToListAsync();
+    }
+
+
+
+
 }
