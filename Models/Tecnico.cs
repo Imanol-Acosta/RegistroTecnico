@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using RegistroTecnico;
 
-namespace RegistroTecnico.Models
-{
+namespace RegistroTecnico.Models; 
+
     public class Tecnico
 
     {
@@ -15,7 +15,7 @@ namespace RegistroTecnico.Models
 
         public float SueldoHora { get; set; } = 0;
     }
-}
+
 
 
 
