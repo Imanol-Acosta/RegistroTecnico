@@ -12,14 +12,6 @@
             <h2 class="card-title">Crear Técnico</h2>
         </div>
 
-        @if (!string.IsNullOrEmpty(mensajeError))
-        {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                @mensajeError
-                <button type="button" class="btn-close" @onclick="LimpiarError"></button>
-            </div>
-        }
-
         <div class="card-body">
             <EditForm Model="@tecnico" OnValidSubmit="Guardar">
                 <DataAnnotationsValidator />
@@ -103,9 +95,7 @@
                 return;
             }
 
-           
             tecnico.TecnicoID = 0;
-
             
             var guardado = await tecnicoService.Guardar(tecnico);
 
