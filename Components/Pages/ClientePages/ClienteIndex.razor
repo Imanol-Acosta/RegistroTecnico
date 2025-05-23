@@ -1,5 +1,6 @@
 ﻿@page "/Cliente/Index"
 @rendermode InteractiveServer
+@inject ClienteService clienteService
 @inject TecnicoService tecnicoService
 @inject NavigationManager navigationManager
 <PageTitle> Consulta de técnicos </PageTitle>
@@ -18,7 +19,7 @@
                     <label class="col-form-label"><strong>Búsqueda</strong></label>
                 </div>
                 <div class="col-5 text-end">
-                    <a href="/Cliente/Create" class="btn btn-success">
+                    <a href="/Cliente/Crear" class="btn btn-success">
                         <span class="bi bi-plus-square"></span> Crear
                     </a>
                 </div>
@@ -34,11 +35,74 @@
                     </select>
                 </div>
 
+                <div class="col-4">
+                    <div class="input-group">
+                        <input class="form-control"  placeholder="Buscar" />
+                        <button type="button" class="btn btn-primary" >
+                            <span class="bi bi-search"></span> Buscar
+                        </button>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(mensajeError))
+                {
+                    <div class="alert alert-danger mt-3">
+                        @mensajeError
+                    </div>
+                }
+                else
+                {
+                    <table class="table table-hover table-bordered text-center mt-4">
+                        <thead class="table table-striped text-black">
+                            <tr>
+                                <th class="fw-semibold">Tecnico Id</th>
+                                <th class="fw-semibold">Nombres</th>
+                                <th class="fw-semibold">Sueldo por hora</th>
+                                <th class="fw-semibold">Editar</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var cliente in Cliente)
+                            {
+                                <tr>
+                                    <td>ecnicoID</td>
+                                    <td>Nombres</td>
+                                    <td>SueldoHora.ToString("N2")</td>
+                                    <td class="text-center">
+                                        <a href="/Cliente/Edit/" class="bi bi-pencil-square fs-4"></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+
 
         </div>
     </div>
 </div>
 </div>
-@code {
+@code { 
+    private List<Cliente> Cliente = new();
+    private string mensajeError = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+        {
+            try
+            {
+                Cliente = await clienteService.Listar(c => true);
+            }
+            catch (Exception ex)
+            {
+                mensajeError = $"Error al cargar los clientes: {ex.Message}";
+            }
+        }
+    
+
+
+
 
 }
