@@ -3,16 +3,14 @@
 @inject TecnicoService tecnicoService
 @inject NavigationManager navigationManager
 
-<PageTitle> Registro de tecnico </PageTitle>
+<PageTitle> Consulta de técnicos </PageTitle>
 <div class="container mt-3">
-    <div class="card shadow p-3">
-        <div class="card-header mb-1 text-center bg-white border-0">
-            <h2 class="card-title">Registro de tecnicos</h2>
+    <div class="card shadow p-0">
+        <div class="card-header text-center bg-primary text-white">
+            <h2 class="card-title mb-0">Registro de técnicos</h2>
         </div>
 
         <div class="card-body">
-
-            @* Etiquetas y Botón Crear *@
             <div class="row align-items-end mb-1">
                 <div class="col-3">
                     <label class="col-form-label"><strong>Filtrar por:</strong></label>
@@ -21,18 +19,17 @@
                     <label class="col-form-label"><strong>Búsqueda</strong></label>
                 </div>
                 <div class="col-5 text-end">
-                    <a href="/Tecnico/Create" class="btn btn-success" style="background-color:#1C8D0F; border: none;">
+                    <a href="/Tecnico/Create" class="btn btn-success">
                         <span class="bi bi-plus-square"></span> Crear
                     </a>
                 </div>
             </div>
 
-            @* Inputs y botón de búsqueda *@
             <div class="row align-items-center">
                 <div class="col-3">
                     <select class="form-select" @bind="filtro">
                         <option value="" selected>Todos</option>
-                        <option value="Id">TecnicoId</option>
+                        <option value="Id">Tecnico Id</option>
                         <option value="Nombres">Nombre</option>
                         <option value="SueldoHora">Sueldo por Hora</option>
                     </select>
@@ -42,7 +39,7 @@
                     <div class="input-group">
                         <input class="form-control" @bind="valorFiltro" @bind:event="oninput" @onkeyup="@EnterKeyPressed" placeholder="Buscar" />
                         <button type="button" class="btn btn-primary" @onclick="Buscar">
-                            <span class="bi bi-search"></span> 
+                            <span class="bi bi-search"></span> Buscar
                         </button>
                     </div>
                 </div>
@@ -58,13 +55,13 @@
             else
             {
                 <table class="table table-hover table-bordered text-center mt-4">
-                    <thead class="table table-striped text-black" style="border-bottom: 3px solid #1C8D0F;">
+                    <thead class="table table-striped text-black">
                         <tr>
-                            <th class="fw-semibold">TecnicoId</th>
+                            <th class="fw-semibold">Tecnico Id</th>
                             <th class="fw-semibold">Nombres</th>
-                            <th class="fw-semibold">Sueldo por Hora</th>
+                            <th class="fw-semibold">Sueldo por hora</th>
                             <th class="fw-semibold">Editar</th>
-                            <th class="fw-semibold">Eliminar</th>
+                            
                         </tr>
                     </thead>
 
@@ -76,16 +73,14 @@
                                 <td>@tecnico.Nombres</td>
                                 <td>@tecnico.SueldoHora.ToString("N2")</td>
                                 <td class="text-center">
-                                    <a href="/Tecnico/Edit/@tecnico.TecnicoID" class="bi bi-pencil-square fs-4" style="border-color: #3BC035; color: #3BC035; position: relative; top: 3px; left:0px"></a>
-                                </td>
-                                <td class="text-center">
-                                    <a href="/Tecnico/Delete/@tecnico.TecnicoID" class="bi bi-trash fs-4" style="border-color: #FF0000; color: #FF0000; position: relative; top: 3px; left:0px"></a>
+                                    <a href="/Tecnico/Edit/@tecnico.TecnicoID" class="bi bi-pencil-square fs-4"></a>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             }
+
         </div>
     </div>
 </div>
@@ -130,10 +125,6 @@
             
                 return;
             }
-
-            
-      
-
             
             switch (filtro.ToLower())
             {
