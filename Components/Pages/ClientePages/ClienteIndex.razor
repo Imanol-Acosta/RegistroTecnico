@@ -9,46 +9,44 @@
         <div class="card-header text-center bg-primary text-white">
             <h2 class="card-title mb-0">Clientes</h2>
         </div>
-   <div>
-        <div class="card-body">
-            <div class="row align-items-end mb-1">
-                <div class="col-3">
-                    <label class="col-form-label"><strong>Filtrar por:</strong></label>
-                </div>
-                <div class="col-4">
-                    <label class="col-form-label"><strong>Búsqueda</strong></label>
-                </div>
-                <div class="col-5 text-end">
-                    <a href="/Cliente/Crear" class="btn btn-success">
-                        <span class="bi bi-plus-square"></span> Crear
-                    </a>
-                </div>
-            </div>
-
-            <div class="row align-items-center">
-                <div class="col-3">
-                    <select class="form-select">
-                        <option value="" selected>Todos</option>
-                        <option value="Nombres">Nombre</option>
-                        <option value="Direccion">Dirección</option>
-                        <option value="Rnc">RNC</option>
-                        <option value="LimiteCredito">Límite de Crédito</option>
-                        <option value="Tecnico">Técnico</option>
-                        <option value="FechaIngreso">Fecha de Ingreso</option>
-                    </select>
-                </div>
-            </div>
-
-
-                <div class="col-4">
-                    <div class="input-group">
-                        <input class="form-control"  placeholder="Buscar" />
-                        <button type="button" class="btn btn-primary" >
-                            <span class="bi bi-search"></span> Buscar
-                        </button>
+        <div>
+            <div class="card-body">
+                <div class="row align-items-end mb-1">
+                    <div class="col-3">
+                        <label class="col-form-label"><strong>Filtrar por:</strong></label>
+                    </div>
+                    <div class="col-4">
+                        <label class="col-form-label"><strong>Búsqueda</strong></label>
+                    </div>
+                    <div class="col-5 text-end">
+                        <a href="/Cliente/Crear" class="btn btn-success">
+                            <span class="bi bi-plus-square"></span> Crear
+                        </a>
                     </div>
                 </div>
 
+                <div class="row align-items-center">
+                    <div class="col-3">
+                        <select class="form-select">
+                            <option value="" selected>Todos</option>
+                            <option value="Nombres">Nombre</option>
+                            <option value="Direccion">Dirección</option>
+                            <option value="Rnc">RNC</option>
+                            <option value="LimiteCredito">Límite de Crédito</option>
+                            <option value="Tecnico">Técnico</option>
+                            <option value="FechaIngreso">Fecha de Ingreso</option>
+                        </select>
+                    </div>
+
+                    <div class="col-4">
+                        <div class="input-group">
+                            <input class="form-control" placeholder="Buscar" />
+                            <button type="button" class="btn btn-primary">
+                                <span class="bi bi-search"></span> Buscar
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 @if (!string.IsNullOrEmpty(mensajeError))
                 {
                     <div class="alert alert-danger mt-3">
@@ -57,78 +55,59 @@
                 }
                 else
                 {
-                <table class="table table-hover table-bordered text-center mt-4">
-                    <thead class="table table-striped text-black">
-                        <tr>
-                            <th class="fw-semibold">Cliente Id</th>
-                            <th class="fw-semibold">Nombres</th>
-                            <th class="fw-semibold">Dirección</th>
-                            <th class="fw-semibold">RNC</th>
-                            <th class="fw-semibold">Límite de Crédito</th>
-                            <th class="fw-semibold">Técnico</th>
-                            <th class="fw-semibold">Fecha de Ingreso</th>
-                            <th class="fw-semibold">Editar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var cliente in Cliente)
-                        {
+                    <table class="table table-hover table-bordered text-center mt-4">
+                        <thead class="table table-striped text-black">
                             <tr>
-                                <td>@cliente.ClienteId</td>
-                                <td>@cliente.Nombres</td>
-                                <td>@cliente.Direccion</td>
-                                <td>@cliente.Rnc</td>
-                                <td>@cliente.LimiteCredito.ToString("C")</td>
-                                <td>@cliente.Tecnico?.Nombres</td>
-                                <td>@cliente.FechaIngreso.ToString("dd/MM/yyyy")</td>
-                                <td>
-                                    <a class="btn btn-sm btn-outline-primary" href="/Cliente/Editar/@cliente.ClienteId">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                </td>
+                                <th class="fw-semibold">Cliente Id</th>
+                                <th class="fw-semibold">Nombres</th>
+                                <th class="fw-semibold">Dirección</th>
+                                <th class="fw-semibold">RNC</th>
+                                <th class="fw-semibold">Límite de Crédito</th>
+                                <th class="fw-semibold">Técnico</th>
+                                <th class="fw-semibold">TécnicoId</th>
+                                <th class="fw-semibold">Fecha de Ingreso</th>
+                                <th class="fw-semibold">Editar</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-
-                    <table>
+                        </thead>
                         <tbody>
                             @foreach (var cliente in Cliente)
                             {
                                 <tr>
-                                    <td>Tecnico Id</td>
-                                    <td>Nombres</td>
-                                    <td>Rnc</td>
-                                    <td>SueldoHora.ToString("N2")</td>
-                                    <td class="text-center">
-                                        <a href="/Cliente/Edit/" class="bi bi-pencil-square fs-4"></a>
+                                    <td>@cliente.ClienteId</td>
+                                    <td>@cliente.Nombres</td>
+                                    <td>@cliente.Direccion</td>
+                                    <td>@cliente.Rnc</td>
+                                    <td>@cliente.LimiteCredito.ToString("C")</td>
+                                    <td>@cliente.Tecnico?.Nombres</td>
+                                    <td>@cliente.Tecnico?.TecnicoId</td>
+                                    <td>@cliente.FechaIngreso.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <a href="/Cliente/Editar/@cliente.ClienteId" class="bi bi-pencil-square fs-4">
+                                        </a>
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
                 }
-
-
-
+            </div>
         </div>
     </div>
 </div>
-</div>
-@code { 
+@code {
     private List<Cliente> Cliente = new();
     private string mensajeError = string.Empty;
 
     protected override async Task OnInitializedAsync()
+    {
+        try
         {
-            try
-            {
-                Cliente = await clienteService.Listar(c => true);
-            }
-            catch (Exception ex)
-            {
-                mensajeError = $"Error al cargar los clientes: {ex.Message}";
-            }
+            Cliente = await clienteService.Listar(c => true);
         }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al cargar los clientes: {ex.Message}";
+        }
+    }
 
 }

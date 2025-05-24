@@ -1,5 +1,169 @@
-﻿<h3>ClienteEditar</h3>
+﻿@page "/Cliente/Editar/{ClienteId:int}"
+@rendermode InteractiveServer
+@inject ClienteService clienteService
+@inject NavigationManager navigationManager
+@using RegistroTecnico.Models
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Editar Cliente</PageTitle>
+
+<div class="container mt-3">
+    <div class="card shadow p-0">
+        <div class="card-header text-center bg-primary text-white">
+            <h2 class="card-title">Editar Cliente</h2>
+        </div>
+        <div class="card-body">
+        @if (cliente != null && cliente.ClienteId != 0)
+        {
+            <EditForm Model="@cliente" OnValidSubmit="Guardar">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">ID:</label>
+                    <div class="col-sm-9">
+                        <InputNumber class="form-control" @bind-Value="cliente.ClienteId" disabled />
+                        <small class="text-muted">El ID no se puede modificar</small>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Nombres:</label>
+                    <div class="col-sm-9">
+                        <InputText class="form-control" @bind-Value="cliente.Nombres" placeholder="Ingrese el nombre del cliente" />
+                        <ValidationMessage For="@(() => cliente.Nombres)" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Dirección:</label>
+                    <div class="col-sm-9">
+                        <InputText class="form-control" @bind-Value="cliente.Direccion" placeholder="Dirección del cliente" />
+                        <ValidationMessage For="@(() => cliente.Direccion)" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">RNC:</label>
+                    <div class="col-sm-9">
+                        <InputText class="form-control" @bind-Value="cliente.Rnc" placeholder="000-0000000-0" />
+                        <ValidationMessage For="@(() => cliente.Rnc)" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Límite de Crédito:</label>
+                    <div class="col-sm-9">
+                        <InputNumber class="form-control" @bind-Value="cliente.LimiteCredito" placeholder="0.00" />
+                        <ValidationMessage For="@(() => cliente.LimiteCredito)" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Técnico Encargado:</label>
+                    <div class="col-sm-9">
+                        <InputSelect class="form-select" @bind-Value="cliente.TecnicoId">
+                            <option disabled value="">Seleccione un técnico</option>
+                            @foreach (var tecnico in tecnicos)
+                            {
+                                <option value="@tecnico.TecnicoId">@tecnico.Nombres</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => cliente.TecnicoId)" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Fecha de Ingreso:</label>
+                    <div class="col-sm-9">
+                        <InputDate class="form-control" @bind-Value="cliente.FechaIngreso" />
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(mensajeError))
+                {
+                    <div class="alert alert-danger">@mensajeError</div>
+                }
+
+                <div class="card-footer accordion-button">
+                    <div class="col-7 text-end">
+                        <a href="/Cliente/Index" class="btn btn-outline-secondary">
+                            <span class="bi bi-arrow-bar-left"></span> Volver
+                        </a>
+                        <button type="submit" class="btn btn-outline-success">
+                            <span class="bi bi-check-circle-fill"></span> Guardar
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+        }
+        else if (!string.IsNullOrEmpty(mensajeError))
+        {
+            <div class="alert alert-danger m-4 text-center">@mensajeError</div>
+        }
+        else
+        {
+            <div class="text-center m-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2">Cargando cliente...</p>
+            </div>
+        }
+        </div>
+    </div>
+</div>
 
 @code {
+    [Parameter]
+    public int ClienteId { get; set; }
 
+    private Cliente cliente = new();
+    private List<Tecnico> tecnicos = new();
+    private string mensajeError = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Console.WriteLine($"Buscando cliente con ID {ClienteId}");
+            var resultado = await clienteService.Listar(c => c.ClienteId == ClienteId);
+            cliente = resultado.FirstOrDefault();
+
+            if (cliente == null || cliente.ClienteId == 0)
+            {
+                mensajeError = "No se encontró el cliente solicitado.";
+                return;
+            }
+
+            tecnicos = await clienteService.ObtenerTecnicos();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al cargar datos: {ex.Message}";
+        }
+    }
+
+    private async Task Guardar()
+    {
+        try
+        {
+            if (cliente != null)
+            {
+                var guardado = await clienteService.Guardar(cliente);
+                if (guardado)
+                {
+                    navigationManager.NavigateTo("/Cliente/Index");
+                }
+                else
+                {
+                    mensajeError = "No se pudo guardar los cambios.";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al guardar: {ex.Message}";
+        }
+    }
 }
