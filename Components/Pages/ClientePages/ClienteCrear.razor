@@ -50,6 +50,15 @@
                     </div>
                 </div>
 
+                <div class="row mb-3"> <label class="col-sm-3 col-form-label">Fecha de Ingreso:</label> 
+                    <div class="col-sm-9"> 
+                        <InputDate class="form-control" @bind-Value="cliente.FechaIngreso" /> 
+                        <ValidationMessage For="@(() => cliente.FechaIngreso)" />
+                        </div> 
+                    </div>
+
+
+
                 <div class="row mb-3">
                     <label class="col-sm-3 col-form-label">Técnico Encargado:</label>
                     <div class="col-sm-9">
@@ -57,7 +66,7 @@
                             <option disabled selected value="">Seleccione un técnico</option>
                             @foreach (var tecnico in tecnicos)
                             {
-                                <option value="@tecnico.TecnicoId">@tecnico.Nombres</option>
+                                <option value="@tecnico.TecnicoID">@tecnico.Nombres</option>
                             }
                         </InputSelect>
                         <ValidationMessage For="@(() => cliente.TecnicoId)" />
