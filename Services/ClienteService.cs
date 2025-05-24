@@ -86,8 +86,10 @@ public class ClienteService
 
     public async Task<List<Tecnico>> ObtenerTecnicos()
     {
-        return await context.Tecnicos.ToListAsync();
+        await using var contexto = await dbFactory.CreateDbContextAsync();
+        return await contexto.Tecnicos.AsNoTracking().ToListAsync();
     }
+
 
 
 
