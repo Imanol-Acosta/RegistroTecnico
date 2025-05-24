@@ -75,6 +75,7 @@ public class ClienteService
     {
         await using var contexto = await dbFactory.CreateDbContextAsync();
         return await contexto.Clientes.AsNoTracking()
+            .Include(c => c.Tecnico)
             .Where(criterio)
             .ToListAsync();
     }
