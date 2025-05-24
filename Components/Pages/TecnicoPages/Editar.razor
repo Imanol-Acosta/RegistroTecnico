@@ -1,4 +1,4 @@
-﻿@page "/Tecnico/Edit/{TecnicoID:int}"
+﻿@page "/Tecnico/Edit/{Id:int}"
 @rendermode InteractiveServer
 @inject TecnicoService tecnicoService
 @inject NavigationManager navigationManager
@@ -12,6 +12,9 @@
         <div class="card-header text-center bg-primary text-white">
             <h2 class="card-title">Editar Tecnico</h2>
         </div>
+        <div class="card-body">
+            @if (tecnico != null)
+            {
                 <EditForm Model="@tecnico" OnValidSubmit="Guardar">
                     <DataAnnotationsValidator />
                     <ValidationSummary />
@@ -19,7 +22,7 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">ID:</label>
                         <div class="col-sm-9">
-                            <InputNumber class="form-control" @bind-Value="tecnico.TecnicoID" disabled />
+                            <InputNumber class="form-control" @bind-Value="tecnico.TecnicoId" disabled />
                             <small class="text-muted">El ID no se puede modificar</small>
                         </div>
                     </div>
@@ -47,32 +50,48 @@
                         </div>
                     }
 
-                    <div class="card-footer accordion-button">
-                        
-                        <div class="col-7 text-end">
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="/Tecnico/Index" class="btn btn-outline-secondary">
+                            <span class="bi bi-arrow-bar-left"></span> Volver
+                        </a>
 
-                            <a href="/Tecnico/Index" class="btn btn-outline-secondary">
-                                <span class="bi bi-arrow-bar-left"></span> Volver
-                            </a>
-
-                            <button type="submit" class="btn btn-outline-success">
+                        <div>
+                            <button type="submit" class="btn btn-outline-success me-2">
                                 <span class="bi bi-check-circle-fill"></span> Guardar
                             </button>
 
-                            <a href="/Tecnico/Delete/@tecnico.TecnicoID" class="btn btn-outline-danger">
-                            <span class="bi bi-trash"></span>Eliminar    
+                            <a href="/Tecnico/Delete/@tecnico.TecnicoId" class="btn btn-outline-danger">
+                                <span class="bi bi-trash"></span> Eliminar
                             </a>
                         </div>
                     </div>
                 </EditForm>
             }
+            else if (string.IsNullOrEmpty(mensajeError))
+            {
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p>Cargando datos del técnico...</p>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger">
+                    @mensajeError
+                </div>
+                <div class="text-center">
+                    <a href="/Tecnico/Index" class="btn btn-primary">Volver al listado</a>
+                </div>
+            }
         </div>
     </div>
-
+</div>
 
 @code {
     [Parameter]
-    public int TecnicoID { get; set; }
+    public int Id { get; set; }
 
     private Tecnico? tecnico;
     private string mensajeError = string.Empty;
@@ -81,13 +100,13 @@
     {
         try
         {
-           
-            var tecnicos = await tecnicoService.Listar(t => t.TecnicoID == TecnicoID);
+            // Cambié para usar TecnicoId (con 'd' minúscula) como en tu Index
+            var tecnicos = await tecnicoService.Listar(t => t.TecnicoId == Id);
             tecnico = tecnicos.FirstOrDefault();
 
             if (tecnico == null)
             {
-                navigationManager.NavigateTo("/Tecnico/Index");
+                mensajeError = "No se encontró el técnico especificado.";
             }
         }
         catch (Exception ex)

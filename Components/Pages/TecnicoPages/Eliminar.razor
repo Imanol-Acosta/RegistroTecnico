@@ -1,4 +1,4 @@
-﻿@page "/Tecnico/Delete/{TecnicoID:int}"
+﻿@page "/Tecnico/Delete/{TecnicoId:int}"
 @rendermode InteractiveServer
 @inject TecnicoService tecnicoService
 @inject NavigationManager navigationManager
@@ -34,7 +34,7 @@
                         <h5 class="card-title">Datos del Técnico</h5>
                         <div class="row mb-2">
                             <div class="col-sm-3 fw-bold">TécnicoID:</div>
-                            <div class="col-sm-9">@tecnico.TecnicoID</div>
+                            <div class="col-sm-9">@tecnico.TecnicoId</div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-sm-3 fw-bold">Nombres:</div>
@@ -70,7 +70,7 @@
 
 @code {
     [Parameter]
-    public int TecnicoID { get; set; }
+    public int TecnicoId { get; set; }
 
     private Tecnico? tecnico;
     private string mensajeError = string.Empty;
@@ -80,7 +80,7 @@
         try
         {
             
-            var tecnicos = await tecnicoService.Listar(t => t.TecnicoID == TecnicoID);
+            var tecnicos = await tecnicoService.Listar(t => t.TecnicoId == TecnicoId);
             tecnico = tecnicos.FirstOrDefault();
 
            
@@ -100,7 +100,7 @@
         try
         {
             
-            var eliminado = await tecnicoService.Eliminar(TecnicoID);
+            var eliminado = await tecnicoService.Eliminar(TecnicoId);
 
             if (eliminado)
             {

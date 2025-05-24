@@ -43,7 +43,7 @@
                         </button>
                     </div>
                 </div>
-                
+
             </div>
 
             @if (!string.IsNullOrEmpty(mensajeError))
@@ -61,7 +61,7 @@
                             <th class="fw-semibold">Nombres</th>
                             <th class="fw-semibold">Sueldo por hora</th>
                             <th class="fw-semibold">Editar</th>
-                            
+
                         </tr>
                     </thead>
 
@@ -69,11 +69,11 @@
                         @foreach (var tecnico in tecnicos)
                         {
                             <tr>
-                                <td>@tecnico.TecnicoID</td>
+                                <td>@tecnico.TecnicoId</td>
                                 <td>@tecnico.Nombres</td>
                                 <td>@tecnico.SueldoHora.ToString("N2")</td>
                                 <td class="text-center">
-                                    <a href="/Tecnico/Edit/@tecnico.TecnicoID" class="bi bi-pencil-square fs-4"></a>
+                                    <a href="/Tecnico/Edit/@tecnico.TecnicoId" class="bi bi-pencil-square fs-4"></a>
                                 </td>
                             </tr>
                         }
@@ -120,18 +120,18 @@
 
             if (string.IsNullOrWhiteSpace(valorFiltro))
             {
-                
+
                 tecnicos = todosLosTecnicos;
-            
+
                 return;
             }
-            
+
             switch (filtro.ToLower())
             {
                 case "id":
                     if (int.TryParse(valorFiltro, out int tecnicoId))
                     {
-                        tecnicos = todosLosTecnicos.Where(t => t.TecnicoID == tecnicoId).ToList();
+                        tecnicos = todosLosTecnicos.Where(t => t.TecnicoId == tecnicoId).ToList();
                     }
                     else
                     {
@@ -162,10 +162,10 @@
                     break;
 
                 default:
-                    
+
                     tecnicos = todosLosTecnicos.Where(t =>
                         (t.Nombres != null && t.Nombres.ToLower().Contains(valorFiltro.ToLower())) ||
-                        (t.TecnicoID.ToString().Contains(valorFiltro)) ||
+                        (t.TecnicoId.ToString().Contains(valorFiltro)) ||
                         (t.SueldoHora.ToString().Contains(valorFiltro))).ToList();
                     break;
             }
