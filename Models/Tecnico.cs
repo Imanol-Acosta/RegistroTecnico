@@ -8,7 +8,7 @@ namespace RegistroTecnico.Models;
     {
         [Key]
 
-        public int TecnicoID { get; set; }
+        public int TecnicoId { get; set; }
 
         [Required(ErrorMessage = "Este campo es requerido")]
         public string? Nombres { get; set; } = null!;
