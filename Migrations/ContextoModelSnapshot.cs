@@ -62,20 +62,20 @@ namespace RegistroTecnico.Migrations
 
             modelBuilder.Entity("RegistroTecnico.Models.Tecnico", b =>
                 {
-                    b.Property<int>("TecnicoID")
+                    b.Property<int>("TecnicoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TecnicoID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TecnicoId"));
 
                     b.Property<string>("Nombres")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("SueldoHora")
-                        .HasColumnType("real");
+                    b.Property<decimal>("SueldoHora")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("TecnicoID");
+                    b.HasKey("TecnicoId");
 
                     b.ToTable("Tecnicos");
                 });

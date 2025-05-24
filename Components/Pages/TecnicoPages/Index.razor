@@ -152,7 +152,7 @@
                         System.Globalization.CultureInfo.InvariantCulture,
                         out float sueldo))
                     {
-                        tecnicos = todosLosTecnicos.Where(t => Math.Abs(t.SueldoHora - sueldo) < 0.01f).ToList();
+                        tecnicos = todosLosTecnicos.Where(t => Math.Abs(t.SueldoHora) < 0).ToList();
                     }
                     else
                     {

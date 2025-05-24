@@ -13,7 +13,7 @@ namespace RegistroTecnico.Models;
         [Required(ErrorMessage = "Este campo es requerido")]
         public string? Nombres { get; set; } = null!;
 
-        public float SueldoHora { get; set; } = 0;
+        public decimal SueldoHora { get; set; }
     }
 
 

@@ -15,14 +15,14 @@ namespace RegistroTecnico.Migrations
                 name: "Tecnicos",
                 columns: table => new
                 {
-                    TecnicoID = table.Column<int>(type: "int", nullable: false)
+                    TecnicoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombres = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SueldoHora = table.Column<float>(type: "real", nullable: false)
+                    SueldoHora = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tecnicos", x => x.TecnicoID);
+                    table.PrimaryKey("PK_Tecnicos", x => x.TecnicoId);
                 });
 
             migrationBuilder.CreateTable(
@@ -45,7 +45,7 @@ namespace RegistroTecnico.Migrations
                         name: "FK_Clientes_Tecnicos_TecnicoId",
                         column: x => x.TecnicoId,
                         principalTable: "Tecnicos",
-                        principalColumn: "TecnicoID",
+                        principalColumn: "TecnicoId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
