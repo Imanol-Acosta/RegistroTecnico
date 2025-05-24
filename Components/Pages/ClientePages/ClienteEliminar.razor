@@ -1,0 +1,113 @@
+﻿@page "/Cliente/Delete/{ClienteId:int}"
+@rendermode InteractiveServer
+@inject ClienteService clienteService
+@inject NavigationManager navigationManager
+@using RegistroTecnico.Models
+
+<PageTitle>Eliminar Cliente</PageTitle>
+
+<div class="container mt-3">
+    <div class="card shadow p-0">
+        <div class="card-header text-center bg-primary text-white">
+            <h2 class="card-title">Eliminar Cliente</h2>
+        </div>
+        <div class="card-body">
+            @if (cliente == null)
+            {
+                <div class="text-center">
+                    <p>Cargando datos...</p>
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="text-danger">
+                    <h4 class="alert-heading">¿Estás seguro de que quieres eliminar el Cliente?</h4>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Datos del Cliente</h5>
+                        <div class="row mb-2">
+                            <div class="col-sm-3 fw-bold">ClienteID:</div>
+                            <div class="col-sm-9">@cliente.ClienteId</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-3 fw-bold">Nombres:</div>
+                            <div class="col-sm-9">@cliente.Nombres</div>
+                        </div>
+                        
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-3 fw-bold">Dirección:</div>
+                            <div class="col-sm-9">@cliente.Direccion</div>
+                        </div>
+                    </div>
+            
+
+                @if (!string.IsNullOrEmpty(mensajeError))
+                {
+                    <div class="alert alert-danger">
+                        @mensajeError
+                    </div>
+                }
+
+                <div class="card-footer accordion-button">
+                    <button @onclick="EliminarCliente" class="btn btn-outline-danger">
+                        <span class="bi bi-trash"></span> Eliminar
+                    </button>
+                    <a href="/Cliente/Index" class="btn btn-outline-secondary">
+                        <span class="bi bi-arrow-left"></span> Volver
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int ClienteId { get; set; }
+
+    private Cliente? cliente;
+    private string mensajeError = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var clientes = await clienteService.Listar(c => c.ClienteId == ClienteId);
+            cliente = clientes.FirstOrDefault();
+
+            if (cliente == null)
+            {
+                navigationManager.NavigateTo("/Cliente/Index");
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al cargar datos: {ex.Message}";
+        }
+    }
+
+    private async Task EliminarCliente()
+    {
+        try
+        {
+            var eliminado = await clienteService.Eliminar(ClienteId);
+            if (eliminado)
+            {
+                navigationManager.NavigateTo("/Cliente/Index");
+            }
+            else
+            {
+                mensajeError = "No se pudo eliminar el cliente.";
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al eliminar: {ex.Message}";
+        }
+    }
+}
